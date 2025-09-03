@@ -1,4 +1,4 @@
-# 🦅 Griffin-ATR Validator
+#  Griffin-ATR Validator
 
 **Griffin-ATR Validator** is a precision tool in **Pine Script** for **TradingView**, developed from the heart of market volatility.
 This indicator helps you focus only on candles that truly have **power** and **certainty**, not just random market noise.
@@ -63,7 +63,7 @@ More details are available in the `LICENSE.txt` file.
 
 
 
-# 🦅 Griffin-ATR Validator
+#  Griffin-ATR Validator
 
 **Griffin-ATR Validator** یک ابزار دقیق در **Pine Script** برای **TradingView** است که از دل نوسانات بازار شکل گرفته.
 این اندیکاتور به شما کمک می‌کند تنها روی کندل‌هایی تمرکز کنید که واقعاً **قدرت** و **قطعیت** دارند، نه صرفاً نویزهای بی‌هدف بازار.
