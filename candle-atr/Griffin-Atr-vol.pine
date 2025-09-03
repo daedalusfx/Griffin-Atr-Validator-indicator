@@ -1,0 +1,70 @@
+//@version=5
+indicator("Griffin-ATR-Validator", overlay=true, max_bars_back=20)
+
+// --- ورودی‌های کاربر ---
+atrPeriod = input.int(14, title="دوره ATR")
+showBullish = input.bool(true, title="نمایش سیگنال صعودی")
+showBearish = input.bool(true, title="نمایش سیگنال نزولی")
+
+// --- محاسبات ---
+// محاسبه مقدار ATR
+float atrValue = ta.atr(atrPeriod)
+
+// محاسبه اجزای کندل
+float bodySize = math.abs(close - open)
+float upperShadow = high - math.max(open, close)
+float lowerShadow = math.min(open, close) - low
+
+// --- بررسی شروط بر اساس قانون نهایی شما ---
+// شرط ۱: آیا بدنه کندل از ATR بزرگتر یا مساوی است؟
+bool isBodyOk = bodySize >= atrValue
+
+// شرط ۲: آیا سایه مخالف (طبق تعریف شما) از ATR کوچکتر است؟
+// برای کندل سبز -> سایه بالایی
+// برای کندل قرمز -> سایه پایینی
+bool isAdverseShadowOk = (close > open and upperShadow <= atrValue) or (close < open and lowerShadow <= atrValue)
+
+// --- ترکیب نهایی برای سیگنال‌ها ---
+bool bullishSignal = showBullish and (close > open) and isBodyOk and isAdverseShadowOk
+bool bearishSignal = showBearish and (close < open) and isBodyOk and isAdverseShadowOk
+
+// --- نمایش روی چارت ---
+plotshape(bullishSignal, 
+          title="Bullish Signal", 
+          location=location.belowbar, 
+          color=color.new(color.blue, 0), 
+          style=shape.triangleup, 
+          text="OK",
+          size=size.small)
+          
+plotshape(bearishSignal, 
+          title="Bearish Signal", 
+          location=location.abovebar, 
+          color=color.new(color.purple, 0), 
+          style=shape.triangledown, 
+          text="OK",
+          size=size.small)
+
+// --- ایجاد جدول اطلاعات ---
+var table atrInfoTable = table.new(position.bottom_right, 4, 2, 
+                                  bgcolor=color.new(color.gray, 80), 
+                                  border_width=1)
+if barstate.islast
+    // ردیف اول: ATR
+    table.cell(atrInfoTable, 0, 0, "ATR", text_color=color.white)
+    table.cell(atrInfoTable, 0, 1, str.tostring(atrValue, format.mintick), text_color=color.white)
+    
+    // ردیف دوم: Body Size
+    table.cell(atrInfoTable, 1, 0, "Body Size", text_color=color.white)
+    table.cell(atrInfoTable, 1, 1, str.tostring(bodySize, format.mintick), 
+               text_color=isBodyOk ? color.green : color.red)
+               
+    // ردیف سوم: Upper Shadow
+    table.cell(atrInfoTable, 2, 0, "Upper Shadow", text_color=color.white)
+    table.cell(atrInfoTable, 2, 1, str.tostring(upperShadow, format.mintick), 
+               text_color= (close > open and upperShadow <= atrValue) ? color.green : (close > open ? color.red : color.white))
+
+    // ردیف چهارم: Lower Shadow
+    table.cell(atrInfoTable, 3, 0, "Lower Shadow", text_color=color.white)
+    table.cell(atrInfoTable, 3, 1, str.tostring(lowerShadow, format.mintick), 
+               text_color= (close < open and lowerShadow <= atrValue) ? color.green : (close < open ? color.red : color.white))
